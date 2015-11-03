@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Go1 by wangfakang</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Go1</h1>
+        <p class="header">goroutine study simply</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/wangfakang/go1/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/wangfakang/go1/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/wangfakang/go1">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/wangfakang">wangfakang</a></p>
+
+
+      </header>
+      <section>
+        <p><code>golang中的协程</code>  </p>
+
+<h1>
+<a id="首先说一下协程的概念" class="anchor" href="#%E9%A6%96%E5%85%88%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%8D%8F%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>首先说一下协程的概念：</h1>
+
+<p>　　所谓协程就是轻量级的线程，其实我理解的就是一个函数．   </p>
+
+<h1>
+<a id="协程与线程进程的对比---" class="anchor" href="#%E5%8D%8F%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AF%B9%E6%AF%94---" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程与线程进程的对比：   </h1>
+
+<p>　　协成是比线程和进程更加轻量级的，就相当于一个函数一样．系统的开销小．   </p>
+
+<h1>
+<a id="协程是如何管理---" class="anchor" href="#%E5%8D%8F%E7%A8%8B%E6%98%AF%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86---" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程是如何管理：   </h1>
+
+<p>　　协成采用的是段拷贝的方式进行协成栈的管理的，我们都知道在ｃ语言中的递归函数有时候会出现栈溢出，
+　　原因就是每次都会为其分配新的函数栈空间当递归过多的话会发生溢出，而ｇｏ解决了这个问题，
+　　使用了(段拷贝技术)[<a href="http://tonybai.com/2014/11/05/how-stacks-are-handled-in-go/%5D%EF%BC%8E">http://tonybai.com/2014/11/05/how-stacks-are-handled-in-go/]．</a>     </p>
+
+<h1>
+<a id="go中协成的启动---" class="anchor" href="#go%E4%B8%AD%E5%8D%8F%E6%88%90%E7%9A%84%E5%90%AF%E5%8A%A8---" aria-hidden="true"><span class="octicon octicon-link"></span></a>go中协成的启动：   </h1>
+
+<p>　　　go function_name();<br>
+　　　这就相当于启动了一个协程．语法很简单的．    </p>
+
+<h1>
+<a id="协成之间的同步和通信---" class="anchor" href="#%E5%8D%8F%E6%88%90%E4%B9%8B%E9%97%B4%E7%9A%84%E5%90%8C%E6%AD%A5%E5%92%8C%E9%80%9A%E4%BF%A1---" aria-hidden="true"><span class="octicon octicon-link"></span></a>协成之间的同步和通信：   </h1>
+
+<p>　　　在go语言中使用channel进行同步和通信．相当于linux中的管道．   </p>
+
+<ul>
+<li>无缓冲的：</li>
+</ul>
+
+<pre><code>  1 package main
+  2 var a string
+  3 var c = make(chan int)
+  4 func f() {
+  5     a = "hello, world"
+  6     &lt;-c
+  7 }
+  8   
+  9 func main() {
+ 10     go f()
+ 11     c &lt;- 0
+ 12     print(a)
+ 13  
+ 14 }
+</code></pre>
+
+<ul>
+<li>有缓冲的：<br>
+</li>
+</ul>
+
+<div class="highlight highlight-source-lua"><pre>  <span class="pl-c1">1</span> package main
+  <span class="pl-c1">2</span> var a string
+  <span class="pl-c1">3</span> var c <span class="pl-k">=</span> <span class="pl-c1">make</span>(chan int,<span class="pl-c1">10</span>)
+  <span class="pl-c1">4</span> func <span class="pl-c1">f</span>() {
+  <span class="pl-c1">5</span>     a <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>hello, world<span class="pl-pds">"</span></span>
+  <span class="pl-c1">6</span>     c<span class="pl-k">&lt;-</span><span class="pl-c1">0</span>
+  <span class="pl-c1">7</span> }
+  <span class="pl-c1">8</span>   
+  <span class="pl-c1">9</span> func <span class="pl-c1">main</span>() {
+ <span class="pl-c1">10</span>     go <span class="pl-c1">f</span>()
+ <span class="pl-c1">11</span>      <span class="pl-k">&lt;-</span>c
+ <span class="pl-c1">12</span>     <span class="pl-c1">print</span>(a)
+ <span class="pl-c1">13</span>  
+ <span class="pl-c1">14</span> }</pre></div>
+
+<h1>
+<a id="go中select机制---" class="anchor" href="#go%E4%B8%ADselect%E6%9C%BA%E5%88%B6---" aria-hidden="true"><span class="octicon octicon-link"></span></a>go中select机制：   </h1>
+
+<p>　　 select是干什么的恩？大家都知道linux中的select poll epoll等，其实go中的select也差不多有类似的功能
+只不过go　中的select是监听多个channel上是否有数据流动．即当有多个channel的时候可以使用select进行相
+应的监听，当谁发生了则执行谁，当多个channel同时发生则进行随机的选择一个．<br>
+如下：   </p>
+
+<div class="highlight highlight-source-lua"><pre>func <span class="pl-c1">main</span>(){
+    c :<span class="pl-k">=</span> <span class="pl-c1">make</span>(chan int)
+    b :<span class="pl-k">=</span> <span class="pl-c1">make</span>(chan bool)
+    go <span class="pl-c1">func</span> (){
+
+    <span class="pl-k">for</span> {
+       <span class="pl-c1">select</span> {
+           case v :<span class="pl-k">=</span> <span class="pl-k">&lt;-</span>c:
+              <span class="pl-c1">printfln</span>(v)
+           case <span class="pl-k">&lt;-</span> time.<span class="pl-c1">After</span>(<span class="pl-c1">5</span><span class="pl-k">*</span>time.<span class="pl-smi">Second</span>):
+              b <span class="pl-k">&lt;-</span> <span class="pl-c1">true</span>
+              <span class="pl-k">break</span>
+        }
+   }()
+
+   <span class="pl-k">&lt;-</span> b
+
+}</pre></div>
+
+<p>上面函数就简单的实现了一个防止进入阻塞的情况．   </p>
+
+<ul>
+<li>定时器：<br>
+</li>
+</ul>
+
+<div class="highlight highlight-source-lua"><pre>func <span class="pl-c1">demo</span>(input chan <span class="pl-c1">interface</span>{}) {
+    t1 :<span class="pl-k">=</span> time.<span class="pl-c1">NewTimer</span>(time.<span class="pl-smi">Second</span> <span class="pl-k">*</span> <span class="pl-c1">5</span>)
+    t2 :<span class="pl-k">=</span> time.<span class="pl-c1">NewTimer</span>(time.<span class="pl-smi">Second</span> <span class="pl-k">*</span> <span class="pl-c1">10</span>)
+
+    <span class="pl-k">for</span> {
+        <span class="pl-c1">select</span> {
+        case msg <span class="pl-k">&lt;-</span> input:
+            <span class="pl-c1">println</span>(msg)
+
+        case <span class="pl-k">&lt;-</span>t1.<span class="pl-smi">C</span>:
+            <span class="pl-c1">println</span>(<span class="pl-s"><span class="pl-pds">"</span>5s timer<span class="pl-pds">"</span></span>)
+            t1.<span class="pl-c1">Reset</span>(time.<span class="pl-smi">Second</span> <span class="pl-k">*</span> <span class="pl-c1">5</span>)
+
+        case <span class="pl-k">&lt;-</span>t2.<span class="pl-smi">C</span>:
+            <span class="pl-c1">println</span>(<span class="pl-s"><span class="pl-pds">"</span>10s timer<span class="pl-pds">"</span></span>)
+            t2.<span class="pl-c1">Reset</span>(time.<span class="pl-smi">Second</span> <span class="pl-k">*</span> <span class="pl-c1">10</span>)
+        }
+    }
+}</pre></div>
+
+<p>值得注意的是：      </p>
+
+<ul>
+<li>t1 := time.NewTimer(time.Second * 5)<br>
+</li>
+<li>t2 := time.NewTimer(time.Second * 10)<br>
+</li>
+</ul>
+
+<p>　　这两个是一个全局的，而不像＂case &lt;- time.After(5*time.Second)＂，这是由于每次循环的时候重新执行
+　　case 条件语句并重新注册到 select 中，因此这每次执行 select 的时候，都是启动了一个新的从头开始计
+　　时的 Timer 对象，所以在这里定义了两个全局的．    </p>
+
+<h1>
+<a id="欢迎一起交流学习-" class="anchor" href="#%E6%AC%A2%E8%BF%8E%E4%B8%80%E8%B5%B7%E4%BA%A4%E6%B5%81%E5%AD%A6%E4%B9%A0-" aria-hidden="true"><span class="octicon octicon-link"></span></a>欢迎一起交流学习 </h1>
+
+<p>在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流</p>
+
+<ul>
+<li>邮件(1031379296#qq.com, 把#换成@)</li>
+<li>QQ: 1031379296</li>
+<li>weibo: <a href="http://weibo.com/u/2786211992/home">@王发康</a>
+</li>
+</ul>
+
+<h1>
+<a id="thx" class="anchor" href="#thx" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thx</h1>
+
+<ul>
+<li>chunshengsterATgmail.com</li>
+</ul>
+
+<h1>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author</h1>
+
+<ul>
+<li>Linux\nginx\golang\c\c++爱好者</li>
+<li>欢迎一起交流  一起学习# </li>
+<li>Others say good and Others good</li>
+</ul>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("goroutine  channel select ");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
