@@ -46,8 +46,8 @@
 <a id="协程是如何管理---" class="anchor" href="#%E5%8D%8F%E7%A8%8B%E6%98%AF%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86---" aria-hidden="true"><span class="octicon octicon-link"></span></a>协程是如何管理：   </h1>
 
 <p>　　协成采用的是段拷贝的方式进行协成栈的管理的，我们都知道在ｃ语言中的递归函数有时候会出现栈溢出，
-　　原因就是每次都会为其分配新的函数栈空间当递归过多的话会发生溢出，而ｇｏ解决了这个问题，
-　　使用了(段拷贝技术)[<a href="http://tonybai.com/2014/11/05/how-stacks-are-handled-in-go/%5D%EF%BC%8E">http://tonybai.com/2014/11/05/how-stacks-are-handled-in-go/]．</a>     </p>
+原因就是每次都会为其分配新的函数栈空间当递归过多的话会发生溢出，而ｇｏ解决了这个问题，
+使用了<a href="http://tonybai.com/2014/11/05/how-stacks-are-handled-in-go/">段拷贝技术</a>．     </p>
 
 <h1>
 <a id="go中协成的启动---" class="anchor" href="#go%E4%B8%AD%E5%8D%8F%E6%88%90%E7%9A%84%E5%90%AF%E5%8A%A8---" aria-hidden="true"><span class="octicon octicon-link"></span></a>go中协成的启动：   </h1>
